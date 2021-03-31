@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2021-03-29
+## Add CI Role and Break Glass User - [Jira Ticket](https://collaborate2.ons.gov.uk/jira/browse/IDPT-354)
+- Created CI/CD IAM policy and Role to be deployed to all aws accounts
+  - Best guess at IAM policy for resources that we're likely to manage with ci running on ec2
+- Created an administrative user to be deployed to all aws accounts
+  - `breakglass` user will have the same privileges as `restricted-admin` role in development accounts
+- Added additional permissions to `restricted-admin` policy
+  - **restricted-admin**: `autoscaling:*`, `iam:*`, `vpc:*` and `cloudfront:*`
+- Fixed: `restricted-admin` policy empty resources arg
+- Added additional logic to differentiate an `iam` type AWS account
+  - Like non `dev` AWS accounts, `iam` AWS accounts exclude `restricted-admin` roles etc..
+  - `iam` AWS accounts also exclude route53 resources
+- Added/Refactored unit tests
+
+
 ## [0.2.0] - 2021-03-26
 ## Refactor Module - [Jira Ticket](https://collaborate2.ons.gov.uk/jira/browse/IDPT-355)
 - removed provider blocks.  Should be implemented outside of module

@@ -56,7 +56,8 @@ Contains administrative roles `restricted-admin` and `developer`
 
 ```terraform
 module "dev" {
-  source = "../"
+  source  = "ONSdigital/account/aws"
+  version = "~> 0.2.1"
 
   account_env          = "dev"
   account_team         = "cia"
@@ -76,7 +77,8 @@ Provision an AWS account for testing, production etc...
 
 ```terraform
 module "prod" {
-  source = "../"
+  source  = "ONSdigital/account/aws"
+  version = "~> 0.2.1"
 
   account_env          = "prod"
   account_team         = "catd"
@@ -86,6 +88,26 @@ module "prod" {
   name                 = "prod-account"
   splunk_user_arn      = aws_iam_user.splunk_user.arn
   dns_subdomain        = "production"
+  master_zone_id       = "M4ST3RZ0N3ID"
+  iam_account_id       = "012345678910"
+}
+```
+
+Provision an AWS account for managing identity i.e. `iam`
+
+```terraform
+module "iam" {
+  source  = "ONSdigital/account/aws"
+  version = "~> 0.2.1"
+
+  account_env          = "iam"
+  account_team         = "cia"
+  config_bucket        = "cia-config-bucket"
+  config_sns_topic_arn = aws_sns_topic.splunk_topic.arn
+  root_account_email   = "aws-registration.ons.000@ons.gov.uk"
+  name                 = "iam"
+  splunk_user_arn      = aws_iam_user.splunk_user.arn
+  dns_subdomain        = "iam"
   master_zone_id       = "M4ST3RZ0N3ID"
   iam_account_id       = "012345678910"
 }

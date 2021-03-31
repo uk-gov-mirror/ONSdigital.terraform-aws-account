@@ -43,6 +43,21 @@ module "test" {
   iam_account_id       = "012345678910"
 }
 
+module "iam" {
+  source = "../"
+
+  account_env          = "iam"
+  account_team         = "cia"
+  config_bucket        = "cia-config-bucket"
+  config_sns_topic_arn = aws_sns_topic.splunk_topic.arn
+  root_account_email   = "aws-registration.ons.000@ons.gov.uk"
+  name                 = "iam"
+  splunk_user_arn      = aws_iam_user.splunk_user.arn
+  dns_subdomain        = "iam"
+  master_zone_id       = "M4ST3RZ0N3ID"
+  iam_account_id       = "012345678910"
+}
+
 resource "aws_iam_user" "splunk_user" {
   name = "splunk-user"
 }

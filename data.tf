@@ -18,6 +18,20 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
+data "aws_iam_policy_document" "service_assume_role" {
+  statement {
+    sid    = "ServiceAssumeRole"
+    effect = "Allow"
+
+    principals {
+      identifiers = ["ec2.amazonaws.com"]
+      type        = "Service"
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
 data "aws_iam_policy_document" "splunk_logs" {
   statement {
     sid    = "SplunkAccess"
@@ -34,6 +48,8 @@ data "aws_iam_policy_document" "splunk_logs" {
 }
 
 data "aws_iam_policy_document" "restricted_admin_dev" {
+  count = var.account_env == "dev" ? 1 : 0
+
   statement {
     sid    = "RestrictedAdminDev"
     effect = "Allow"
@@ -41,8 +57,10 @@ data "aws_iam_policy_document" "restricted_admin_dev" {
     actions = [
       "acm:*",
       "automation:*",
+      "autoscaling:*",
       "aws-marketplace:*",
       "cloudformation:*",
+      "cloudfront:*",
       "cloudtrail:*",
       "cloudwatch:*",
       "config:*",
@@ -56,6 +74,7 @@ data "aws_iam_policy_document" "restricted_admin_dev" {
       "events:*",
       "glacier:*",
       "health:*",
+      "iam:*",
       "inspector:*",
       "kinesis:*",
       "kms:*",
@@ -75,11 +94,12 @@ data "aws_iam_policy_document" "restricted_admin_dev" {
       "swf:*",
       "support:*",
       "trustedadvisor:*",
+      "vpc:*",
       "waf:*",
       "waf-regional:*"
     ]
 
-    resources = []
+    resources = ["*"]
   }
 }
 
@@ -265,6 +285,8 @@ data "aws_iam_policy_document" "restricted_admin_read_only" {
 }
 
 data "aws_iam_policy_document" "developer_dev" {
+  count = var.account_env == "dev" ? 1 : 0
+
   statement {
     sid    = "DeveloperDev"
     effect = "Allow"
@@ -302,5 +324,47 @@ data "aws_iam_policy_document" "end_user" {
 
     actions   = []
     resources = []
+  }
+}
+
+data "aws_iam_policy_document" "ci" {
+  statement {
+    sid    = "CiCd"
+    effect = "Allow"
+
+    actions = [
+      "acm:*",
+      "autoscaling:*",
+      "cloudtrail:*",
+      "cloudwatch:*",
+      "ec2:*",
+      "elasticloadbalancing:*",
+      "iam:*",
+      "kinesis:*",
+      "kms:*",
+      "lambda:*",
+      "route53:*",
+      "s3:*",
+      "secretsmanager:*",
+      "ses:*",
+      "shield:*",
+      "sns:*",
+      "sqs:*",
+      "ssm:*",
+      "vpc:*",
+      "waf:*",
+      "waf-regional:*"
+    ]
+
+    resources = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "breakglass" {
+  statement {
+    sid       = "BreakGlass"
+    effect    = "Allow"
+    actions   = ["*"]
+    resources = ["*"]
   }
 }

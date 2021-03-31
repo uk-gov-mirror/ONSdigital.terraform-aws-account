@@ -10,6 +10,12 @@ resource "aws_iam_account_password_policy" "strict" {
   password_reuse_prevention      = 10
 }
 
+resource "aws_iam_user" "breakglass" {
+  name          = "breakglass"
+  path          = "/"
+  force_destroy = true
+}
+
 resource "aws_iam_service_linked_role" "config" {
   aws_service_name = "config.amazonaws.com"
 }
@@ -17,7 +23,7 @@ resource "aws_iam_service_linked_role" "config" {
 resource "aws_iam_policy" "restricted_admin_dev" {
   count  = var.account_env == "dev" ? 1 : 0
   name   = "restricted-admin"
-  policy = data.aws_iam_policy_document.restricted_admin_dev.json
+  policy = data.aws_iam_policy_document.restricted_admin_dev[0].json
 }
 
 resource "aws_iam_policy" "restricted_admin_read_only" {
@@ -28,7 +34,7 @@ resource "aws_iam_policy" "restricted_admin_read_only" {
 resource "aws_iam_policy" "developer_dev" {
   count  = var.account_env == "dev" ? 1 : 0
   name   = "developer"
-  policy = data.aws_iam_policy_document.developer_dev.json
+  policy = data.aws_iam_policy_document.developer_dev[0].json
 }
 
 resource "aws_iam_policy" "developer" {
@@ -39,6 +45,17 @@ resource "aws_iam_policy" "developer" {
 resource "aws_iam_policy" "end_user" {
   name   = "${var.name}-end-user"
   policy = data.aws_iam_policy_document.end_user.json
+}
+
+resource "aws_iam_policy" "ci" {
+  name   = "ci"
+  policy = data.aws_iam_policy_document.ci.json
+}
+
+resource "aws_iam_policy" "breakglass" {
+  name        = "breakglass"
+  description = "Restricted administrative policy attached to breakglass user for required interactive intervention"
+  policy      = data.aws_iam_policy_document.breakglass.json
 }
 
 resource "aws_iam_role" "restricted_admin_dev" {
@@ -68,6 +85,11 @@ resource "aws_iam_role" "end_user" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+resource "aws_iam_role" "ci" {
+  name               = "ci"
+  assume_role_policy = data.aws_iam_policy_document.service_assume_role.json
+}
+
 resource "aws_iam_role_policy_attachment" "restricted_admin_dev" {
   count      = var.account_env == "dev" ? 1 : 0
   policy_arn = aws_iam_policy.restricted_admin_dev[0].arn
@@ -93,4 +115,14 @@ resource "aws_iam_role_policy_attachment" "developer" {
 resource "aws_iam_role_policy_attachment" "end_user" {
   policy_arn = aws_iam_policy.end_user.arn
   role       = aws_iam_role.end_user.name
+}
+
+resource "aws_iam_role_policy_attachment" "ci" {
+  policy_arn = aws_iam_policy.ci.arn
+  role       = aws_iam_role.ci.name
+}
+
+resource "aws_iam_user_policy_attachment" "breakglass" {
+  policy_arn = aws_iam_policy.breakglass.arn
+  user       = aws_iam_user.breakglass.name
 }
