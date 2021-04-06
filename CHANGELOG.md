@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2021-04-06
+## Deploy AWS-D Part 2 - [Jira Ticket](https://collaborate2.ons.gov.uk/jira/browse/IDPT-442)
+- Remove Splunk logging configuration/resources in favour of the **Events** module implementation
+- Add Terraform state management resources as part of account provisioning
+- Refactor AWS-Config recording to record within member account
+- Added provider config for provisioning member account
+- Removed **zone delegation** record resource in favour of implementing outside module
+
+
 ## [0.2.1] - 2021-03-29
 ## Add CI Role and Break Glass User - [Jira Ticket](https://collaborate2.ons.gov.uk/jira/browse/IDPT-354)
 - Created CI/CD IAM policy and Role to be deployed to all aws accounts

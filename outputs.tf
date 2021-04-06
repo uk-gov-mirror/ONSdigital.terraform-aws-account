@@ -23,7 +23,7 @@ output "zone_name_servers" {
   description = "The name servers of the AWS account's route53 zone"
 }
 
-output "s3_access_bucket_arn" {
-  value       = length(aws_s3_bucket.splunk_logs) > 0 ? aws_s3_bucket.splunk_logs[0].arn : ""
-  description = "The ARN of the splunk log delivery bucket"
+output "state_bucket" {
+  value       = aws_s3_bucket.state.bucket
+  description = "The name of the state bucket"
 }

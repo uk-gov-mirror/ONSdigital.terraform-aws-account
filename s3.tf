@@ -1,46 +1,68 @@
-resource "aws_s3_bucket" "splunk_logs" {
-  count = signum(length(var.splunk_logs_sqs_arn))
+resource "aws_s3_bucket" "state" {
+  bucket = "${var.name}-terraform-state-${var.account_env}"
+  acl    = "private"
 
-  bucket = "${var.name}-s3-access"
+  versioning {
+    enabled = true
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  dynamic "logging" {
+    for_each = length(var.logging_bucket) > 0 ? [1] : []
+    content {
+      target_bucket = var.logging_bucket
+      target_prefix = "s3/${var.name}-terraform-state-${var.account_env}/"
+    }
+  }
+}
+
+resource "aws_s3_bucket" "config" {
+  bucket = "${var.name}-config-recorder-${var.account_env}"
   acl    = "log-delivery-write"
 
-  policy = data.aws_iam_policy_document.splunk_logs.json
+  lifecycle {
+    prevent_destroy = true
+  }
 
   lifecycle_rule {
     id      = "log"
     enabled = true
 
-    expiration {
-      days = 60
+    transition {
+      days          = 90
+      storage_class = "GLACIER"
     }
   }
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+  dynamic "logging" {
+    for_each = length(var.logging_bucket) > 0 ? [1] : []
+    content {
+      target_bucket = var.logging_bucket
+      target_prefix = "s3/${var.name}-config-recorder/"
     }
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "splunk_logs" {
-  count = signum(length(var.splunk_logs_sqs_arn))
-
-  bucket                  = aws_s3_bucket.splunk_logs[0].id
+resource "aws_s3_bucket_public_access_block" "state_acl" {
+  bucket                  = aws_s3_bucket.state.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_notification" "splunk_logs" {
-  count = signum(length(var.splunk_logs_sqs_arn))
+resource "aws_s3_bucket_policy" "config" {
+  bucket = aws_s3_bucket.config.id
+  policy = data.aws_iam_policy_document.config.json
+}
 
-  bucket = aws_s3_bucket.splunk_logs[0].id
-
-  queue {
-    queue_arn = var.splunk_logs_sqs_arn
-    events    = ["s3:ObjectCreated:*"]
-  }
+resource "aws_s3_bucket_public_access_block" "config_acl" {
+  bucket                  = aws_s3_bucket.config.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
