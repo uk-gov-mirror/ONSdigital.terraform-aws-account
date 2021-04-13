@@ -87,7 +87,7 @@ resource "aws_iam_role" "end_user" {
 
 resource "aws_iam_role" "ci" {
   name               = "ci"
-  assume_role_policy = data.aws_iam_policy_document.service_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.ci_assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "restricted_admin_dev" {

@@ -1,6 +1,11 @@
+provider "aws" {
+  alias = "account"
+}
+
 resource "aws_organizations_account" "account" {
-  name  = var.name
-  email = var.root_account_email
+  provider = aws.account
+  name     = var.name
+  email    = var.root_account_email
 
   tags = {
     team = var.account_team

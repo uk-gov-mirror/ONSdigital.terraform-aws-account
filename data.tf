@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "service_assume_role" {
+data "aws_iam_policy_document" "ci_assume_role" {
   statement {
     sid    = "ServiceAssumeRole"
     effect = "Allow"
@@ -29,21 +29,6 @@ data "aws_iam_policy_document" "service_assume_role" {
     }
 
     actions = ["sts:AssumeRole"]
-  }
-}
-
-data "aws_iam_policy_document" "splunk_logs" {
-  statement {
-    sid    = "SplunkAccess"
-    effect = "Allow"
-
-    principals {
-      type        = "AWS"
-      identifiers = [var.splunk_user_arn]
-    }
-
-    actions   = ["s3:GetObject"]
-    resources = ["arn:aws:s3:::${var.name}-s3-access/*"]
   }
 }
 
@@ -307,23 +292,25 @@ data "aws_iam_policy_document" "developer_dev" {
   }
 }
 
+# PLACEHOLDER Developer Policy
 data "aws_iam_policy_document" "developer" {
   statement {
     sid    = "Developer"
-    effect = "Allow"
+    effect = "Deny"
 
-    actions   = []
-    resources = []
+    actions   = ["*"]
+    resources = ["*"]
   }
 }
 
+# PLACEHOLDER End-User Policy
 data "aws_iam_policy_document" "end_user" {
   statement {
     sid    = "EndUser"
-    effect = "Allow"
+    effect = "Deny"
 
-    actions   = []
-    resources = []
+    actions   = ["*"]
+    resources = ["*"]
   }
 }
 
@@ -366,5 +353,37 @@ data "aws_iam_policy_document" "breakglass" {
     effect    = "Allow"
     actions   = ["*"]
     resources = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "config" {
+  statement {
+    sid = "DenyUnsecuredTransport"
+
+    actions = [
+      "s3:*",
+    ]
+
+    condition {
+      test = "Bool"
+
+      values = [
+        "true",
+      ]
+
+      variable = "aws:SecureTransport"
+    }
+
+    effect = "Allow"
+
+    principals {
+      identifiers = [aws_iam_service_linked_role.config.aws_service_name]
+      type        = "Service"
+    }
+
+    resources = [
+      aws_s3_bucket.config.arn,
+      "${aws_s3_bucket.config.arn}/*",
+    ]
   }
 }
