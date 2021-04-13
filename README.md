@@ -86,7 +86,7 @@ Contains administrative roles `restricted-admin` and `developer`
 ```terraform
 module "dev" {
   source  = "ONSdigital/account/aws"
-  version = "~> 0.2.1"
+  version = "~> 0.2.2"
 
   account_env          = "dev"
   account_team         = "cia"
@@ -108,7 +108,7 @@ Provision an AWS account for testing, production etc...
 ```terraform
 module "prod" {
   source  = "ONSdigital/account/aws"
-  version = "~> 0.2.1"
+  version = "~> 0.2.2"
 
   account_env        = "prod"
   account_team       = "catd"
@@ -131,7 +131,7 @@ Provision an AWS account for managing identity i.e. `iam`
 ```terraform
 module "iam" {
   source  = "ONSdigital/account/aws"
-  version = "~> 0.2.1"
+  version = "~> 0.2.2"
 
   account_env        = "iam"
   account_team       = "cia"
