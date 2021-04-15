@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2021-04-15
+## IAM Configuration - [Jira Ticket](https://collaborate2.ons.gov.uk/jira/browse/IDPT-451)
+ - Modified **restricted-admin** resource names from `restricted-admin` to `administrator`
+- Modified **restricted-admin-read-only** resource names from `restricted-admin-read-only` to `administrator-read-only`
+- Modified **developer-dev** resource names from `developer-dev` to `developer`
+- Refactored terraform references and ran tests to verify
+- Updated the documentation with testing section
+
+
 ## [0.2.3] - 2021-04-13
 ## Provision ACM Certs - [Jira Ticket](https://collaborate2.ons.gov.uk/jira/browse/IDPT-446)
 - Modified zone name suffix from `aws.onsdigital.uk` to `idp.onsdigital.uk`

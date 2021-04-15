@@ -1,11 +1,13 @@
 # terraform-module-aws-account
 Provision AWS accounts within an organisation 
 
+[Terraform]: https://www.terraform.io/downloads.html
+
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| [Terraform](https://www.terraform.io/downloads.html) | >= 0.12.0, < 0.15.0 |
+| [Terraform] | >= 0.12.0, < 0.15.0 |
 
 
 ## Providers
@@ -148,3 +150,25 @@ module "iam" {
   }
 }
 ```
+
+### Testing
+
+#### Unit Tests
+
+There is a small set of unit tests defined in [test-aws-account.py](test-aws-account.py) to test the conditional logic in this 
+[Terraform] module. These tests run automatically when a pull request is created in this repo. 
+
+To run the tests locally
+
+1. Create/Activate a [virtual environment](https://docs.python.org/3/tutorial/venv.html)
+
+2. Execute the test runner
+
+```shell
+python -m pytest test-aws-account.py
+```
+
+#### Contract Tests
+
+There are also contract tests to verify some values provided to this module when instantiated.  The tests are defined with 
+the variables in [variables.tf](variables.tf)

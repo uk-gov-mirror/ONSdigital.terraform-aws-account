@@ -32,11 +32,11 @@ data "aws_iam_policy_document" "ci_assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "restricted_admin_dev" {
+data "aws_iam_policy_document" "administrator" {
   count = var.account_env == "dev" ? 1 : 0
 
   statement {
-    sid    = "RestrictedAdminDev"
+    sid    = "Administrator"
     effect = "Allow"
 
     actions = [
@@ -88,9 +88,9 @@ data "aws_iam_policy_document" "restricted_admin_dev" {
   }
 }
 
-data "aws_iam_policy_document" "restricted_admin_read_only" {
+data "aws_iam_policy_document" "administrator_read_only" {
   statement {
-    sid    = "RestrictedAdminOnly"
+    sid    = "AdministratorReadOnly"
     effect = "Allow"
 
     actions = [
@@ -269,11 +269,11 @@ data "aws_iam_policy_document" "restricted_admin_read_only" {
   }
 }
 
-data "aws_iam_policy_document" "developer_dev" {
+data "aws_iam_policy_document" "developer" {
   count = var.account_env == "dev" ? 1 : 0
 
   statement {
-    sid    = "DeveloperDev"
+    sid    = "Developer"
     effect = "Allow"
 
     actions = [
@@ -293,9 +293,9 @@ data "aws_iam_policy_document" "developer_dev" {
 }
 
 # PLACEHOLDER Developer Policy
-data "aws_iam_policy_document" "developer" {
+data "aws_iam_policy_document" "developer_read_only" {
   statement {
-    sid    = "Developer"
+    sid    = "DeveloperReadOnly"
     effect = "Deny"
 
     actions   = ["*"]
